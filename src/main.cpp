@@ -44,7 +44,7 @@ void setup() {
     //while (1);
   }
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-
+  //rtc.adjust(DateTime(2024, 12, 26, 18, 53, 30));
 
   FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
 
@@ -68,6 +68,8 @@ void loop() {
   Serial.print(":");
   printTwoDigits(now.second());
   Serial.println();
+
+  // LIGHTS
 
   if (now.hour() < 7 || now.hour() > 17) {
     // NIGHT
@@ -104,15 +106,22 @@ void loop() {
   }
   FastLED.show();
 
-  // for (posVal = 0; posVal <= 180; posVal += 1) { // goes from 0 degrees to 180 degrees
-  //   // in steps of 1 degree
-  //   myservo.write(posVal);       // tell servo to go to position in variable 'pos'
-  //   delay(15);                   // waits 15ms for the servo to reach the position
-  // }
-  // for (posVal = 180; posVal >= 0; posVal -= 1) { // goes from 180 degrees to 0 degrees
-  //   myservo.write(posVal);       // tell servo to go to position in variable 'pos'
-  //   delay(15);                   // waits 15ms for the servo to reach the position
-  // }
+  // FOOD
+  if (now.hour() == 13 && now.minute() > 0 && now.minute() <= 5 && posVal < 180){
+  //if (posVal < 180){
+    for (int move = 0; move <= 60; move += 1) { // goes from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      posVal = posVal + 1;
+      myservo.write(posVal);       // tell servo to go to position in variable 'pos'
+      delay(15);                   // waits 15ms for the servo to reach the position
+      Serial.println(posVal);
+    }
+  }
+  else
+  {
+    posVal = 0;
+    myservo.write(posVal);
+  }
 
   // delay 5 minutes
   delay(300000);
